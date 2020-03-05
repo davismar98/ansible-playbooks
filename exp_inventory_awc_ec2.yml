@@ -1,0 +1,14 @@
+plugin: aws_ec2
+boto_profile: default
+regions: 
+  - us-east-1
+keyed_groups:
+  - key: tags.ResourceAppRole
+    prefix: role_
+    separator: ""
+group_by:
+  - tag-value=ResourceAppRole
+filters:
+  tag:proxy: 'yes'
+  instance-state-name: running
+strict_permissions: False
