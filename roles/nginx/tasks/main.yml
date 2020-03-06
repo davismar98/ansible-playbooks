@@ -1,51 +1,75 @@
 ---
+- name: Install yum-utils
+  yum:
+    yum:
+    name: "{{ packages }}"
+  vars:
+    packages:
+    - yum-utils
+    - device-mapper-persistent-data
+    - lvm2
+
+- name: install EPEL release 
+  yum:
+    name: epel-release
+    state: latest
+
 - name: ensure nginx is at the latest version
   yum: 
     name: nginx 
     state: latest
   become: yes
+
 - name: start nginx
   service:
       name: nginx
       state: started
   become: yes
+
 - name: Create directory sites-available if it does not exist
   file:
     path: /etc/nginx/sites-available
     state: directory
   become: yes
+
 - name: copy the nginx config file
   copy:
     src: files/nginx.conf
     dest: /etc/nginx/nginx.conf
   become: yes
+
 - name: copy the nginx server block config file
   copy:
     src: files/static_site.cfg
     dest: /etc/nginx/sites-available/static_site.cfg
   become: yes
+
 - name: Create directory sites-enabled if it does not exist
   file:
     path: /etc/nginx/sites-enabled
     state: directory
   become: yes
+
 - name: create symlink
   file:
     src: /etc/nginx/sites-available/static_site.cfg
     dest: /etc/nginx/sites-enabled/default
     state: link
   become: yes
+
 - name: copy the content of the web site
   copy:
     src: files/static-site-src/
     dest: /srv/www/experian.com/public_html
   become: yes
+
 - name: Make my web directory tree readable
   file:
     path: /srv/www
     mode: u=rwX,g=rX,o=rX
     recurse: yes 
   become: yes  
+  
 - name: restart nginx
   service:
     name: nginx
