@@ -1,7 +1,6 @@
 ---
 - name: Install yum-utils
   yum:
-    yum:
     name: "{{ packages }}"
   vars:
     packages:
@@ -69,7 +68,7 @@
     mode: u=rwX,g=rX,o=rX
     recurse: yes 
   become: yes  
-  
+
 - name: restart nginx
   service:
     name: nginx
